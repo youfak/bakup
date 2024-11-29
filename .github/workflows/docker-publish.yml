@@ -1,5 +1,15 @@
 name: actions
-on: [push, pull_request] # 触发事件
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+  # schedule:
+  #   - cron: 0 22 */3 * *
+
 env:
   REPO_URL: https://github.com/zhx47/bakup.git
   REPO_BRANCH: master
