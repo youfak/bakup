@@ -37,7 +37,7 @@ jobs:
           echo "--------------------------硬盘信息--------------------------"
           echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
       - name: 创建工作目录
-        run: mkdir workdir
+        run: mkdir /workdir
       - name: 下载固件源码
         working-directory: /workdir
         run: |
