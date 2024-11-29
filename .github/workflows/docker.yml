@@ -20,8 +20,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 检查项目分支
-        uses: actions/checkout@main
       - name: Check Server Performance
         run: |
           echo "警告⚠"
