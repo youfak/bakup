@@ -20,8 +20,26 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: 检查项目分支
-        uses: actions/checkout@main
+      # 检出你的 fork 仓库代码
+      - name: Checkout fork repository
+        uses: actions/checkout@v2
+ 
+      # 拉取上游仓库的最新更改
+      - name: Fetch upstream changes
+        run: |
+          git fetch upstream
+ 
+      # 检查是否有新的提交（这里只是一个简单的检查，实际上你可能需要更复杂的逻辑来处理合并）
+      - name: Check for new commits
+        run: |
+          upstream_commit=$(git rev-parse upstream/main)
+          current_commit=$(git rev-parse HEAD)
+
+          if [ "$upstream_commit" != "$current_commit" ]; then
+            echo "New commits found in upstream. Preparing to merge..."
+          else
+            echo "No new commits found in upstream."
+          fi
       - name: 检查服务器情况
         run: |
           echo "警告⚠"
@@ -50,22 +68,6 @@ jobs:
       - name: 进入源码目录
         run: cd jdServer 
       
-            # 提供 docker 元数据，构建 docker images tag 时使用
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-                type=schedule
-                type=ref,event=branch
-                type=ref,event=pr
-                type=semver,pattern={{version}}
-                type=semver,pattern={{major}}.{{minor}}
-                type=semver,pattern={{major}}
-                type=sha  
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       
@@ -77,6 +79,23 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 提供 docker 元数据，构建 docker images tag 时使用
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha  
 
       - name: 编译镜像并推送hub
         uses: docker/build-push-action@v3
