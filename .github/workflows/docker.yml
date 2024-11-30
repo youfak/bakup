@@ -36,6 +36,8 @@ jobs:
           echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
           echo "--------------------------硬盘信息--------------------------"
           echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+      - name: 创建工作目录
+        run: sudo mkdir /workdir
       - name: 下载固件源码
         working-directory: /workdir
         run: |
