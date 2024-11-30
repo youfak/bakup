@@ -24,22 +24,22 @@ jobs:
       - name: Checkout fork repository
         uses: actions/checkout@v2
  
-      # 拉取上游仓库的最新更改
-      - name: Fetch upstream changes
-        run: |
-          git fetch upstream
+      # # 拉取上游仓库的最新更改
+      # - name: Fetch upstream changes
+      #   run: |
+      #     git fetch upstream
  
-      # 检查是否有新的提交（这里只是一个简单的检查，实际上你可能需要更复杂的逻辑来处理合并）
-      - name: Check for new commits
-        run: |
-          upstream_commit=$(git rev-parse upstream/main)
-          current_commit=$(git rev-parse HEAD)
+      # # 检查是否有新的提交（这里只是一个简单的检查，实际上你可能需要更复杂的逻辑来处理合并）
+      # - name: Check for new commits
+      #   run: |
+      #     upstream_commit=$(git rev-parse upstream/main)
+      #     current_commit=$(git rev-parse HEAD)
 
-          if [ "$upstream_commit" != "$current_commit" ]; then
-            echo "New commits found in upstream. Preparing to merge..."
-          else
-            echo "No new commits found in upstream."
-          fi
+      #     if [ "$upstream_commit" != "$current_commit" ]; then
+      #       echo "New commits found in upstream. Preparing to merge..."
+      #     else
+      #       echo "No new commits found in upstream."
+      #     fi
       - name: 检查服务器情况
         run: |
           echo "警告⚠"
