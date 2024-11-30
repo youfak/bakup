@@ -40,6 +40,7 @@ jobs:
         run: |
           sudo mkdir /workdir
           sudo mkdir /workdir/jdServer
+          sudo chmod 777 /workdir/jdServer
       - name: 下载固件源码
         working-directory: /workdir
         run: |
