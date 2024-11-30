@@ -61,9 +61,6 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             # tag event
             type=ref,enable=true,priority=600,prefix=,suffix=,event=tag
-    
-      # 构建镜像 使用 docker/Build-And-push@v5 插件有问题
-      - uses: actions/checkout@v2
       - name: Build Docker Image  
         run: |
           docker login --username=${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }} ${{ env.REGISTRY }}
