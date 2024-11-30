@@ -20,14 +20,14 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      # 检出你的 fork 仓库代码
-      - name: Checkout fork repository
-        uses: actions/checkout@v2
+      # # 检出你的 fork 仓库代码
+      # - name: Checkout fork repository
+      #   uses: actions/checkout@v2
  
-      # 拉取上游仓库的最新更改
-      - name: Fetch upstream changes
-        run: |
-          git fetch bakup
+      # # 拉取上游仓库的最新更改
+      # - name: Fetch upstream changes
+      #   run: |
+      #     git fetch bakup
  
       # 检查是否有新的提交（这里只是一个简单的检查，实际上你可能需要更复杂的逻辑来处理合并）
       - name: Check for new commits
