@@ -17,12 +17,12 @@ env:
   REGISTRY: youfak
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
     steps:
       - name: 检查项目分支
         uses: actions/checkout@main
-      - name: Check Server Performance
+      - name: 检查服务器情况
         run: |
           echo "警告⚠"
           echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
@@ -50,33 +50,33 @@ jobs:
       - name: 进入源码目录
         run: cd jdServer 
       
+            # 提供 docker 元数据，构建 docker images tag 时使用
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+                type=schedule
+                type=ref,event=branch
+                type=ref,event=pr
+                type=semver,pattern={{version}}
+                type=semver,pattern={{major}}.{{minor}}
+                type=semver,pattern={{major}}
+                type=sha  
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-
       - name: 登录到DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # 提供 docker 元数据，构建 docker images tag 时使用
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha  
 
       - name: 编译镜像并推送hub
         uses: docker/build-push-action@v3
@@ -85,8 +85,7 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64,linux/arm64/v8
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       # - name: Build Docker Image
       #   uses: docker/setup-buildx-action@v2
