@@ -65,8 +65,3 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-      # - name: Build Docker Image
-      #   run: |
-      #     cd bakup
-      #     ls -l
-      #     docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --push .
