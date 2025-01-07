@@ -77,16 +77,14 @@ jobs:
             type=semver,pattern={{major}}
             type=sha  
 
-      - name: 编译镜像并推送hub
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          file: bakup/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
-      # - name: Build Docker Image
-      #   uses: docker/setup-buildx-action@v2
-      #   run: |
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --push .
+      # - name: 编译镜像并推送hub
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     context: .
+      #     file: bakup/Dockerfile
+      #     platforms: linux/amd64
+      #     push: true
+      #     tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --push .
