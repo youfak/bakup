@@ -46,7 +46,9 @@ jobs:
           git clone $REPO_URL -b $REPO_BRANCH jdServer
           ln -sf /workdir/jdServer $GITHUB_WORKSPACE/jdServer
       - name: 进入源码目录
-        run: cd jdServer && npm install
+        run: | 
+          cd jdServer
+          ls -l
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
