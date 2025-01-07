@@ -46,7 +46,7 @@ jobs:
           git clone $REPO_URL -b $REPO_BRANCH jdServer
           ln -sf /workdir/jdServer $GITHUB_WORKSPACE/jdServer
       - name: 进入源码目录
-        run: cd jdServer 
+        run: cd jdServer && npm install
       
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: jdServer/Dockerfile_amd64
+          file: jdServer/Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
