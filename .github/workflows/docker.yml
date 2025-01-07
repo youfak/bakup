@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: jdServer/Dockerfile
+          file: jdServer/Dockerfile_amd64
           platforms: linux/amd64
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
