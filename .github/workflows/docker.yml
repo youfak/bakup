@@ -34,16 +34,10 @@ jobs:
           echo -e "$(sudo lshw -short -C memory | grep GiB)\n"
           echo "--------------------------硬盘信息--------------------------"
           echo "硬盘数量: $(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
-      # - name: 创建工作目录
-      #   run: |
-      #     sudo mkdir /workdir
-      #     sudo mkdir /workdir/jdServer
-      #     sudo chmod 777 /workdir/jdServer
       - name: 下载固件源码
-        # working-directory: /workdir
         run: |
-          df -hT $GITHUB_WORKSPACE
-          git clone https://github.com/zhx47/bakup.git
+          git clone ${{ env.REPO_URL }} --branch ${{ env.REPO_BRANCH }} --depth 1
+          ls -l bakup
       - name: 进入源码目录
         run: | 
           cd bakup
@@ -60,33 +54,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # 提供 docker 元数据，构建 docker images tag 时使用
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@v4
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v3
         with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-
+          context: bakup
+          file: bakup/Dockerfile
+          platforms: linux/amd64
+          push: true
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha  
-
-      # - name: 编译镜像并推送hub
-      #   uses: docker/build-push-action@v3
-      #   with:
-      #     context: .
-      #     file: bakup/Dockerfile
-      #     platforms: linux/amd64
-      #     push: true
-      #     tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-      - name: Build Docker Image
-        run: |
-          cd bakup
-          ls -l
-          docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --push .
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      # - name: Build Docker Image
+      #   run: |
+      #     cd bakup
+      #     ls -l
+      #     docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest --push .
