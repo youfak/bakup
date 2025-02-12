@@ -95,6 +95,7 @@ jobs:
         with:
           server_address: smtp.163.com
           server_port: 465
+          secure: true
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 【${{ job.status }}】Docker构建通知 - ${{ github.repository }}
@@ -111,4 +112,3 @@ jobs:
             详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           to: ${{ secrets.EMAIL_TO }}
           from: ${{ secrets.EMAIL_USERNAME }}@163.com
-          content_type: text/plain
