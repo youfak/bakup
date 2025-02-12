@@ -60,8 +60,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-
       - name: Build and Push Docker Image
+        id: docker_build
         uses: docker/build-push-action@v3
         with:
           context: bakup
@@ -70,3 +70,45 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: 发送Telegram通知
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            构建状态: ${{ job.status }}
+            
+            仓库: ${{ github.repository }}
+            分支: ${{ github.ref }}
+            提交信息: ${{ github.event.head_commit.message }}
+            
+            工作流: ${{ github.workflow }}
+            运行编号: ${{ github.run_number }}
+            
+            详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: 发送邮件通知
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.163.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: 【${{ job.status }}】Docker构建通知 - ${{ github.repository }}
+          body: |
+            构建状态: ${{ job.status }}
+            
+            仓库: ${{ github.repository }}
+            分支: ${{ github.ref }}
+            提交信息: ${{ github.event.head_commit.message }}
+            
+            工作流: ${{ github.workflow }}
+            运行编号: ${{ github.run_number }}
+            
+            详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          to: ${{ secrets.EMAIL_TO }}
+          from: ${{ secrets.EMAIL_USERNAME }}@163.com
+          content_type: text/plain
