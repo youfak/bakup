@@ -20,6 +20,23 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: 配置 Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: 检出当前仓库
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - name: 同步远程仓库更新
+        run: |
+          git remote add upstream ${{ env.REPO_URL }}
+          git fetch upstream
+          git merge upstream/${{ env.REPO_BRANCH }} --no-edit
+          git push origin ${{ github.ref }}
+          
       - name: 设置时间戳
         id: timestamp
         run: echo "TIME=$(date +'%Y%m%d%H')" >> $GITHUB_ENV
