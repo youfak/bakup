@@ -78,16 +78,16 @@ jobs:
           to: ${{ secrets.TELEGRAM_CHAT_ID }}
           token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           message: |
-            构建状态: ${{ job.status }}
+            构建结果通知
+            ⚡ 构建状态: ${{ job.status }}
+            📦 仓库: ${{ github.repository }}
+            🌿 分支: ${{ github.ref }}
+            💬 提交信息: ${{ github.event.head_commit.message }}
             
-            仓库: ${{ github.repository }}
-            分支: ${{ github.ref }}
-            提交信息: ${{ github.event.head_commit.message }}
+            🔄 工作流: ${{ github.workflow }}
+            📋 运行编号: #${{ github.run_number }}
             
-            工作流: ${{ github.workflow }}
-            运行编号: ${{ github.run_number }}
-            
-            详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            🔍 详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: 发送邮件通知
         if: always()
@@ -100,15 +100,20 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: 【${{ job.status }}】Docker构建通知 - ${{ github.repository }}
           body: |
-            构建状态: ${{ job.status }}
+            构建结果通知
             
-            仓库: ${{ github.repository }}
-            分支: ${{ github.ref }}
-            提交信息: ${{ github.event.head_commit.message }}
+            ⚡ 构建状态: ${{ job.status }}
+            📦 仓库: ${{ github.repository }}
+            🌿 分支: ${{ github.ref }}
+            💬 提交信息: ${{ github.event.head_commit.message }}
             
-            工作流: ${{ github.workflow }}
-            运行编号: ${{ github.run_number }}
+            🔄 工作流: ${{ github.workflow }}
+            📋 运行编号: #${{ github.run_number }}
             
-            详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            🔍 详细信息: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            ---
+            此邮件由 GitHub Actions 自动发送，请勿回复。
           to: ${{ secrets.EMAIL_TO }}
-          from: ${{ secrets.EMAIL_USERNAME }}@163.com
+          from: GitHub Actions <${{ secrets.EMAIL_USERNAME }}@163.com>
+          content_type: text/plain
